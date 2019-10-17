@@ -1,0 +1,208 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+Licensed to the Apache Software Foundation (ASF) under one
+or more contributor license agreements.  See the NOTICE file
+distributed with this work for additional information
+regarding copyright ownership.  The ASF licenses this file
+to you under the Apache License, Version 2.0 (the
+"License"); you may not use this file except in compliance
+with the License.  You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing,
+software distributed under the License is distributed on an
+"AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+KIND, either express or implied.  See the License for the
+specific language governing permissions and limitations
+under the License.
+-->
+
+<!--
+ | This is the configuration file for Maven. It can be specified at two levels:
+ |
+ |  1. User Level. This settings.xml file provides configuration for a single user,
+ |                 and is normally provided in ${user.home}/.m2/settings.xml.
+ |
+ |                 NOTE: This location can be overridden with the CLI option:
+ |
+ |                 -s /path/to/user/settings.xml
+ |
+ |  2. Global Level. This settings.xml file provides configuration for all Maven
+ |                 users on a machine (assuming they're all using the same Maven
+ |                 installation). It's normally provided in
+ |                 ${maven.conf}/settings.xml.
+ |
+ |                 NOTE: This location can be overridden with the CLI option:
+ |
+ |                 -gs /path/to/global/settings.xml
+ |
+ | The sections in this sample file are intended to give you a running start at
+ | getting the most out of your Maven installation. Where appropriate, the default
+ | values (values used when the setting is not specified) are provided.
+ |
+ |-->
+<settings xmlns="http://maven.apache.org/SETTINGS/1.0.0"
+          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+          xsi:schemaLocation="http://maven.apache.org/SETTINGS/1.0.0 http://maven.apache.org/xsd/settings-1.0.0.xsd">
+    <!-- localRepository
+     | The path to the local repository maven will use to store artifacts.
+     |
+     | Default: ${user.home}/.m2/repository
+
+    -->
+    <!-- 设置本地仓库的位置 -->
+    <localRepository>D:/Maven/repository3</localRepository>
+    
+    <!-- 表示是否使用交互模式，默认是true；如果设为false，那么当Maven需要用户进行输入的时候，它会使用一个默认值。 -->
+    <interactiveMode>true</interactiveMode>
+    
+    <!-- 表示是否离线，默认是false。这个属性表示在Maven进行项目编译和部署等操作时是否允许Maven进行联网来下载所需要的信息。 -->
+    <offline>false</offline>
+    
+    <pluginGroups>
+        <!-- pluginGroup
+         | Specifies a further group identifier to use for plugin lookup.
+        <pluginGroup>com.your.plugins</pluginGroup>
+        -->
+    </pluginGroups>
+
+    <proxies>
+
+    </proxies>
+
+    <!-- servers
+     | This is a list of authentication profiles, keyed by the server-id used within the system.
+     | Authentication profiles can be used whenever maven must make a connection to a remote server.
+     |-->
+    <servers>
+        <!-- server元素用于配置当向mirro或者是repository所指向的仓库部署时所需要的认证信息 -->
+        <server>
+            <!-- id元素匹配mirror或者是repository的id -->
+            <id>server00001</id>
+            <!-- 认证信息配置：认证信息可以用username,password、privateKey,filePermissions和directoryPermissions这三对元素指定，
+                username,password 用于指定普通的用户名和密码
+                privateKey,passphrase 用于指定秘钥文件的位置和秘钥的密码
+                filePermissions,directoryPermissions 用于指定文件和路径的权限字符串
+            -->
+            <username>admin</username>
+            <password>123456</password>
+            <privateKey>${user.home}/.ssh/id_dsa</privateKey>
+            <passphrase>some_passphrase</passphrase>
+            <filePermissions>664</filePermissions>
+            <directoryPermissions>775</directoryPermissions>
+        </server>
+    </servers>
+
+    <mirrors>
+        <!-- mirror用于为匹配的repository设置一个镜像地址 -->
+        <mirror>
+            <id>mirrorOfServer00001</id>
+            <name>aliyun mirror</name>
+            <!-- 
+                1、配置为哪些reporitory通过镜像来访问仓库,通过匹配repository的id元素，可以
+                同时配置多个，使用“，”分隔。如果该元素配置为“*”,则表示为所有的repository
+                通过当前镜像来访问。如果不希望某个repository通过该镜像访问，则使用"!"符号进行排除。
+                被爬出的repository通常是放在最后，这些repository包括settings文件中和pom文件中的。
+            -->
+            <mirrorOf>*, !repo1</mirrorOf>
+            <!-- 镜像地址 -->
+            <url>http://maven.aliyun.com/nexus/content/groups/public</url>
+        </mirror>
+    </mirrors>
+
+    <profiles>
+        <profile>
+            <id>jdk-1.7</id>
+            
+            <!-- activation用于配置激活策略，可以通过其下的jdk、os、property和file这四个子标签配置 -->
+            <activation>
+                <!-- 在1.7版本的jdk中激活该profile -->
+                <jdk>1.7</jdk>
+                
+                <!-- 设置默认为不激活 -->
+                <activeByDefault>false</activeByDefault>
+                
+                <!-- 在指定的操作系统信息下被被激活-->
+                <os>
+                    <!-- 操作系统名称，自定义 -->
+                    <name>Windows</name>
+                    
+                    <!-- 
+                        指定操作系统，可选值为：dos,mac,netware,os/2,tandem,windows,win9x,z/os,os/400
+                    -->
+                    <family>windows</family>
+                    
+                    <!-- 系统架构 -->
+                    <arch>amd64</arch>
+                    
+                </os>
+                
+                <!-- 通过判断指定的属性和值是否匹配来控制激活profile -->
+                <property>
+                    <name>mavenVersion</name>
+                    <value>3.5.6</value>
+                </property>
+                
+                <!-- 通过判断指定文件存在或者是不存在来进行激活profile -->
+                <file>
+                    <exists>${basedir}/file2.properties</exists>
+                    <missing>${basedir}/file1.properties</missing>
+                </file>
+                
+            </activation>
+        </profile>
+
+        <profile>
+            <id>jdk-1.8</id>
+
+            <activation>
+                <jdk>1.8</jdk>
+                
+                <!-- 设置默认激活，如果该值为true,其他 -->
+                <activeByDefault>true</activeByDefault>
+            </activation>
+
+            <properties>
+                <maven.compiler.source>1.8</maven.compiler.source>
+                <maven.compiler.target>1.8</maven.compiler.target>
+                <maven.compiler.compilerVersion>1.8</maven.compiler.compilerVersion>
+            </properties>
+            
+            <repositories>
+                <repository>
+                    <id>central</id>
+                    <url>https://repo.maven.apache.org/maven2</url>
+                    <snapshots>
+                        <enabled>false</enabled>
+                    </snapshots>
+                </repository>
+                <repository>
+                    <id>spring-milestone</id>
+                    <name>Spring Milestone</name>
+                    <url>https://repo.spring.io/milestone</url>
+                    <snapshots>
+                        <enabled>false</enabled>
+                    </snapshots>
+                </repository>
+                <repository>
+                    <id>spring-snapshot</id>
+                    <name>Spring Snapshot</name>
+                    <url>https://repo.spring.io/snapshot</url>
+                    <snapshots>
+                        <enabled>true</enabled>
+                    </snapshots>
+                </repository>
+            </repositories>
+            
+        </profile>
+
+    </profiles>
+    
+    <!-- 配置激活的需要激活的profile, -->
+    <activeProfiles>
+        <activeProfile>aaaaa</activeProfile>
+    </activeProfiles>
+
+</settings>
